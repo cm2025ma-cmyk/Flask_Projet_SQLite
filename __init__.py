@@ -49,6 +49,20 @@ def Readfiche(post_id):
     # Rendre le template HTML et transmettre les données
     return render_template('read_data.html', data=data)
 
+@app.route('/fiche_nom/<string:nom>')
+def ReadficheByNom(nom):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    
+    # La requête SQL change : on cherche dans la colonne 'nom'
+    cursor.execute('SELECT * FROM clients WHERE nom = ?', (nom,))
+    
+    data = cursor.fetchall()
+    conn.close()
+    
+    # On réutilise le même fichier HTML pour afficher le résultat
+    return render_template('read_data.html', data=data)
+
 @app.route('/consultation/')
 def ReadBDD():
     conn = sqlite3.connect('database.db')
