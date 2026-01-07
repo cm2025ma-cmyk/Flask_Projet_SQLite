@@ -51,16 +51,20 @@ def Readfiche(post_id):
 
 @app.route('/fiche_nom/<string:nom>')
 def ReadficheByNom(nom):
+    # --- 1. SÉCURITÉ (On vérifie d'abord) ---
+    if not est_authentifie():
+        # Si pas connecté -> Hop, direction la page de login
+        return redirect(url_for('authentification'))
+
+    # --- 2. RECHERCHE (Seulement si on est connecté) ---
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     
-    # La requête SQL change : on cherche dans la colonne 'nom'
     cursor.execute('SELECT * FROM clients WHERE nom = ?', (nom,))
-    
     data = cursor.fetchall()
+    
     conn.close()
     
-    # On réutilise le même fichier HTML pour afficher le résultat
     return render_template('read_data.html', data=data)
 
 @app.route('/consultation/')
