@@ -54,7 +54,7 @@ def Readfiche(nom):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    cursor.execute('SELECT * FROM clients WHERE = ?', (nom,))
+    cursor.execute('SELECT * FROM clients WHERE nom = ?', (nom,))
     
     data = cursor.fetchall()
     conn.close()
