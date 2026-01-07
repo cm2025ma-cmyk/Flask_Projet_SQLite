@@ -49,18 +49,6 @@ def Readfiche(post_id):
     # Rendre le template HTML et transmettre les données
     return render_template('read_data.html', data=data)
 
-@app.route('/fiche_client/<string:nom>') # On attend un texte, pas un chiffre
-def Readfiche(nom):
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    
-    # Cette fois, ça marche car la colonne 'nom' existe dans la base !
-    cursor.execute('SELECT * FROM clients WHERE nom = ?', (nom,))
-    
-    data = cursor.fetchall()
-    conn.close()
-    return render_template('read_data.html', data=data)
-
 @app.route('/consultation/')
 def ReadBDD():
     conn = sqlite3.connect('database.db')
