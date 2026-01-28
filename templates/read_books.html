@@ -4,19 +4,32 @@
     <meta charset="UTF-8">
     <title>Livres Disponibles</title>
     <style>
-        /* Un peu de style pour rendre le tableau plus lisible */
         body { font-family: sans-serif; padding: 20px; }
         table { border-collapse: collapse; width: 100%; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #f2f2f2; }
         tr:hover { background-color: #f5f5f5; }
+        
+        /* Style pour les boutons */
         a.btn { text-decoration: none; background: #007BFF; color: white; padding: 5px 10px; border-radius: 4px; }
+        
+        /* Style pour le lien "Voir mes emprunts" */
+        a.top-link { 
+            text-decoration: none; 
+            background: #28a745; /* Vert */
+            color: white; 
+            padding: 10px 15px; 
+            border-radius: 5px; 
+            margin-left: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Liste des livres disponibles</h1>
+    
     <a href="/">Retour à l'accueil</a>
 
+    <a href="{{ url_for('emprunts_en_cours') }}" class="top-link">Voir les emprunts en cours</a>
     <table>
         <thead>
             <tr>
@@ -38,12 +51,3 @@
                     <a href="/emprunter/{{ row['id'] }}" class="btn">Emprunter</a>
                 </td>
             </tr>
-            {% else %}
-            <tr>
-                <td colspan="4" style="text-align:center;">Aucun livre disponible pour le moment.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</body>
-</html>
