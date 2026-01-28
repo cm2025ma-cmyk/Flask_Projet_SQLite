@@ -26,4 +26,4 @@ cur.execute("INSERT INTO livres (titre, auteur, stock) VALUES (?, ?, ?)", ('L''�
 
 connection.commit()
 connection.close()
-print("Base de données initialisée avec Clients et Livres !")
+print("Base de données initialisée avec Clients et Livres et Emprunts !")
