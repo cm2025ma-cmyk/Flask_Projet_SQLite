@@ -91,20 +91,27 @@ def emprunter(id_livre):
 ######################## Emprunter en cours #################################
 @app.route('/emprunts_en_cours')
 def emprunts_en_cours():
+    # On vérifie que l'utilisateur est connecté (sinon erreur)
+    if not est_authentifie():
+        return redirect(url_for('authentification_client'))
+
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    # Requete SQL intelligente : On joint les deux tables
-    sql = """
-        SELECT livres.titre, livres.auteur, emprunts.nom_emprunteur 
-        FROM emprunts 
-        INNER JOIN livres ON emprunts.livre_id = livres.id
-    """
-    cursor.execute(sql)
-    data = cursor.fetchall()
-    conn.close()
+    # Si la table emprunts n'existe pas encore, on gère l'erreur proprement
+    try:
+        sql = """
+            SELECT livres.titre, livres.auteur, emprunts.nom_emprunteur 
+            FROM emprunts 
+            INNER JOIN livres ON emprunts.livre_id = livres.id
+        """
+        cursor.execute(sql)
+        data = cursor.fetchall()
+    except sqlite3.OperationalError:
+        data = [] # Si la table n'existe pas, on renvoie une liste vide pour ne pas planter
 
+    conn.close()
     return render_template('mes_emprunts.html', data=data)
      ########################################################################
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
