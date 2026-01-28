@@ -59,6 +59,35 @@ def authentification_client():
     # Affichage du formulaire si on est en GET
     return render_template('formulaire_client.html', error=False)
     ###########################################################################################
+    ##########################       Emprunter              #####################################
+@app.route('/emprunter/<int:id_livre>')
+def emprunter(id_livre):
+    if not est_authentifie():
+        return redirect(url_for('authentification_client'))
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # 1. Vérif du stock
+    cursor.execute('SELECT stock FROM livres WHERE id = ?', (id_livre,))
+    resultat = cursor.fetchone()
+
+    if resultat and resultat[0] > 0:
+        # 2. On baisse le stock
+        cursor.execute('UPDATE livres SET stock = stock - 1 WHERE id = ?', (id_livre,))
+        
+        # 3. --- NOUVEAU : On enregistre l'emprunt ---
+        # On récupère le nom stocké dans la session (ou 'Inconnu' si bug)
+        emprunteur = session.get('user_name', 'Inconnu')
+        
+        cursor.execute('INSERT INTO emprunts (livre_id, nom_emprunteur) VALUES (?, ?)', 
+                       (id_livre, emprunteur))
+        
+        conn.commit()
+    
+    conn.close()
+    return redirect(url_for('consultation_livres'))
+     ########################################################################
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 def est_authentifie():
     return session.get('authentifie')
