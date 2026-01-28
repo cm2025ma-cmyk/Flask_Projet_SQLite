@@ -42,20 +42,16 @@ def est_authentifie():
 @app.route('/consultation_livres/')
 def consultation_livres():
     conn = sqlite3.connect('database.db')
-    
-    # Cette ligne est très utile : elle permet de récupérer les données par nom de colonne
     conn.row_factory = sqlite3.Row 
-    
     cursor = conn.cursor()
     
-    # --- LA PARTIE IMPORTANTE ---
-    # On sélectionne tous les livres dont le stock est strictement supérieur à 0
-    cursor.execute('SELECT * FROM books;')
+    # CORRECTION 1 : On utilise la table 'livres'
+    # CORRECTION 2 : On remet le filtre WHERE pour respecter ton commentaire
+    cursor.execute('SELECT * FROM livres WHERE stock > 0;') 
     
     data = cursor.fetchall()
     conn.close()
     
-    # On envoie les données vers une page HTML dédiée
     return render_template('read_books.html', data=data)
 
 @app.route('/ajouter_livre', methods=['GET', 'POST'])
