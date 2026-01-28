@@ -16,5 +16,14 @@ cur.execute("INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)",('GAGN
 cur.execute("INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)",('DUBOIS', 'Charlotte', '789, Rue des Roses, 13005 Marseille'))
 cur.execute("INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)",('LEFEVRE', 'Thomas', '333, Rue de la Paix, 75002 Paris'))
 
+# --- INSERTION DES LIVRES (Nouveau code) ---
+# Note : On insère le titre, l'auteur et le stock
+cur.execute("INSERT INTO livres (titre, auteur, stock) VALUES (?, ?, ?)", ('Le Petit Prince', 'Antoine de Saint-Exupéry', 5))
+cur.execute("INSERT INTO livres (titre, auteur, stock) VALUES (?, ?, ?)", ('1984', 'George Orwell', 3))
+cur.execute("INSERT INTO livres (titre, auteur, stock) VALUES (?, ?, ?)", ('Harry Potter à l''école des sorciers', 'J.K. Rowling', 4))
+cur.execute("INSERT INTO livres (titre, auteur, stock) VALUES (?, ?, ?)", ('Les Misérables', 'Victor Hugo', 2))
+cur.execute("INSERT INTO livres (titre, auteur, stock) VALUES (?, ?, ?)", ('L''Étranger', 'Albert Camus', 0))
+
 connection.commit()
 connection.close()
+print("Base de données initialisée avec Clients et Livres !")
