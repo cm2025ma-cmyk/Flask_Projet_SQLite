@@ -16,3 +16,12 @@ CREATE TABLE livres (
     auteur TEXT NOT NULL,
     stock INTEGER NOT NULL DEFAULT 1
 );
+
+DROP TABLE IF EXISTS emprunts;
+
+CREATE TABLE emprunts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    livre_id INTEGER NOT NULL,
+    nom_emprunteur TEXT NOT NULL,
+    FOREIGN KEY (livre_id) REFERENCES livres (id)
+);
