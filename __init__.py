@@ -41,31 +41,18 @@ def est_authentifie():
 
 @app.route('/consultation_livres/')
 def consultation_livres():
-    conn = sqlite3.connect('database.db') # Ou le chemin avec os.path...
-    conn.row_factory = sqlite3.Row 
+    # Connexion standard
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row  # Indispensable pour utiliser row['titre']
     cursor = conn.cursor()
     
-    # On essaie de sélectionner dans la table livres
-    # Si ça plante ici, c'est que la table s'appelle encore 'books'
-    try:
-        cursor.execute('SELECT * FROM livres WHERE stock > 0;')
-    except sqlite3.OperationalError:
-        # Si 'livres' n'existe pas, on tente 'books'
-        cursor.execute('SELECT * FROM books WHERE stock > 0;')
-        print("ATTENTION : La table s'appelle encore 'books' !")
-
+    # La requête propre : on interroge la table 'livres' (en français)
+    # et on ne prend que ceux qui ont du stock
+    cursor.execute('SELECT * FROM livres WHERE stock > 0;')
+    
     data = cursor.fetchall()
     conn.close()
-
-    # --- LE TEST DE VÉRITÉ ---
-    if len(data) > 0:
-        # On regarde la première ligne pour voir le nom des colonnes
-        premier_livre = data[0]
-        print("--------------------------------------------------")
-        print("VOICI LES COLONNES QUE LA BDD ENVOIE VRAIMENT :")
-        print(premier_livre.keys()) 
-        print("--------------------------------------------------")
-
+    
     return render_template('read_books.html', data=data)
 
 @app.route('/ajouter_livre', methods=['GET', 'POST'])
