@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion Administration</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+        .container { border: 2px solid #333; display: inline-block; padding: 20px; border-radius: 10px; background-color: #f9f9f9; }
+        input { margin: 5px; padding: 5px; }
+        .error { color: red; font-weight: bold; }
+        h1 { color: #d35400; } /* Une couleur différente pour bien distinguer l'admin */
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Accès Administrateur</h1>
+    
+    {% if error %}
+        <p class="error">Échec de l'authentification : Identifiants invalides.</p>
+    {% endif %}
+
+    <form method="post">
+        <label for="username">Identifiant Admin :</label><br>
+        <input type="text" name="username" required><br>
+        
+        <label for="password">Mot de passe :</label><br>
+        <input type="password" name="password" required><br>
+        <br>
+        <input type="submit" value="Se connecter à l'administration">
+    </form>
+</div>
+
+</body>
+</html>
