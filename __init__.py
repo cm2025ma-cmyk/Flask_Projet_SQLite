@@ -50,7 +50,7 @@ def consultation_livres():
     
     # --- LA PARTIE IMPORTANTE ---
     # On sélectionne tous les livres dont le stock est strictement supérieur à 0
-    cursor.execute('SELECT * FROM books WHERE stock > 0;')
+    cursor.execute('SELECT * FROM livres;')
     
     data = cursor.fetchall()
     conn.close()
