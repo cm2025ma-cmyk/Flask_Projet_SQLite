@@ -50,13 +50,42 @@ def consultation_livres():
     
     # --- LA PARTIE IMPORTANTE ---
     # On sélectionne tous les livres dont le stock est strictement supérieur à 0
-    cursor.execute('SELECT * FROM livres;')
+    cursor.execute('SELECT * FROM books;')
     
     data = cursor.fetchall()
     conn.close()
     
     # On envoie les données vers une page HTML dédiée
     return render_template('read_books.html', data=data)
+
+@app.route('/ajouter_livre', methods=['GET', 'POST'])
+def ajouter_livre():
+    # (Optionnel) Ici, tu pourrais ajouter : if not est_admin_authentifie(): ...
+    
+    # --- CAS 1 : L'utilisateur a rempli le formulaire (POST) ---
+    if request.method == 'POST':
+        # 1. On récupère les infos tapées dans les champs
+        titre = request.form['titre']
+        auteur = request.form['auteur']
+        stock = request.form['stock']
+
+        # 2. Connexion BDD
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        # 3. Requête d'ajout
+        # On suppose que ta table s'appelle 'books' avec les colonnes title, author, stock
+        cursor.execute('INSERT INTO books (title, author, stock) VALUES (?, ?, ?)', 
+                       (titre, auteur, stock))
+        
+        conn.commit()
+        conn.close()
+
+        # 4. Une fois fini, on retourne à la liste des livres
+        return redirect(url_for('consultation_livres'))
+
+    # --- CAS 2 : L'utilisateur veut voir le formulaire (GET) ---
+    return render_template('formulaire_livre.html')
     #############################################################################
 
 @app.route('/')
