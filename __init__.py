@@ -49,7 +49,7 @@ def authentification_client():
         if user == 'client' and mdp == 'client123':
             # On active la session "authentifie" (celle utilisée par ta fonction est_authentifie)
             session['authentifie'] = True
-            
+            session['user_name'] = user
             # --- LA DEMANDE : Redirection vers la consultation des livres ---
             return redirect(url_for('consultation_livres'))
         else:
