@@ -8,6 +8,7 @@ import sqlite3
 app = Flask(__name__)                                                                                                                  
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
+######Bilibothèque#######################
 # Fonction pour vérifier si c'est un admin
 def est_admin_authentifie():
     return session.get('admin_authentifie')
@@ -37,6 +38,26 @@ def authentification_admin():
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 def est_authentifie():
     return session.get('authentifie')
+
+@app.route('/consultation_livres/')
+def consultation_livres():
+    conn = sqlite3.connect('database.db')
+    
+    # Cette ligne est très utile : elle permet de récupérer les données par nom de colonne
+    conn.row_factory = sqlite3.Row 
+    
+    cursor = conn.cursor()
+    
+    # --- LA PARTIE IMPORTANTE ---
+    # On sélectionne tous les livres dont le stock est strictement supérieur à 0
+    cursor.execute('SELECT * FROM books WHERE stock > 0;')
+    
+    data = cursor.fetchall()
+    conn.close()
+    
+    # On envoie les données vers une page HTML dédiée
+    return render_template('read_books.html', data=data)
+    #############################################################################
 
 @app.route('/')
 def hello_world():
