@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Emprunts en cours</title>
+</head>
+<body>
+    <h1>Liste des livres actuellement empruntés</h1>
+    <a href="{{ url_for('consultation_livres') }}">Retour aux livres</a>
+    <br><br>
+
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Titre du livre</th>
+                <th>Auteur</th>
+                <th>Emprunté par</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row['titre'] }}</td>
+                <td>{{ row['auteur'] }}</td>
+                <td style="color: blue; font-weight: bold;">{{ row['nom_emprunteur'] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">Aucun emprunt en cours.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
