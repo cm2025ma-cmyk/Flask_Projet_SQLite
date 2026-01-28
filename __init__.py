@@ -35,6 +35,30 @@ def authentification_admin():
             return render_template('formulaire_admin.html', error=True)
 
     return render_template('formulaire_admin.html', error=False)
+
+################################      Auth client      ##################################
+# Route pour l'authentification des clients (Lecteurs)
+@app.route('/authentification_client', methods=['GET', 'POST'])
+def authentification_client():
+    if request.method == 'POST':
+        # Identifiants pour le client (Tu pourras plus tard remplacer ça par une vérif BDD)
+        user = request.form['username']
+        mdp = request.form['password']
+
+        # On vérifie si c'est le bon client
+        if user == 'client' and mdp == 'client123':
+            # On active la session "authentifie" (celle utilisée par ta fonction est_authentifie)
+            session['authentifie'] = True
+            
+            # --- LA DEMANDE : Redirection vers la consultation des livres ---
+            return redirect(url_for('consultation_livres'))
+        else:
+            # En cas d'erreur
+            return render_template('formulaire_client.html', error=True)
+
+    # Affichage du formulaire si on est en GET
+    return render_template('formulaire_client.html', error=False)
+    ###########################################################################################
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 def est_authentifie():
     return session.get('authentifie')
