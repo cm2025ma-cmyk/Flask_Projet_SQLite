@@ -8,6 +8,32 @@ import sqlite3
 app = Flask(__name__)                                                                                                                  
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 
+# Fonction pour vérifier si c'est un admin
+def est_admin_authentifie():
+    return session.get('admin_authentifie')
+
+@app.route('/admin')
+def admin_panel():
+    if not est_admin_authentifie():
+        # Si pas admin, on renvoie vers le login admin
+        return redirect(url_for('authentification_admin'))
+    
+    return "<h2>Bienvenue dans l'espace Administrateur (Gestion Stocks & Utilisateurs)</h2>"
+
+@app.route('/authentification_admin', methods=['GET', 'POST'])
+def authentification_admin():
+    if request.method == 'POST':
+        # Vérifier les identifiants SPÉCIFIQUES à l'admin
+        # Ici on utilise 'admin' et 'admin123'
+        if request.form['username'] == 'admin' and request.form['password'] == 'admin123':
+            session['admin_authentifie'] = True
+            # Rediriger vers le panneau admin après succès
+            return redirect(url_for('admin_panel'))
+        else:
+            # Erreur d'authentification
+            return render_template('formulaire_admin.html', error=True)
+
+    return render_template('formulaire_admin.html', error=False)
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 def est_authentifie():
     return session.get('authentifie')
