@@ -87,6 +87,25 @@ def emprunter(id_livre):
     
     conn.close()
     return redirect(url_for('consultation_livres'))
+    #########################################################################
+######################## Emprunter en cours #################################
+@app.route('/emprunts_en_cours')
+def emprunts_en_cours():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Requete SQL intelligente : On joint les deux tables
+    sql = """
+        SELECT livres.titre, livres.auteur, emprunts.nom_emprunteur 
+        FROM emprunts 
+        INNER JOIN livres ON emprunts.livre_id = livres.id
+    """
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    conn.close()
+
+    return render_template('mes_emprunts.html', data=data)
      ########################################################################
 # Fonction pour créer une clé "authentifie" dans la session utilisateur
 def est_authentifie():
