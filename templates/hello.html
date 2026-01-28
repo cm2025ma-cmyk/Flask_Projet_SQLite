@@ -1,3 +1,35 @@
 <!doctype html>
-<title>Flask Server</title>
-<h1> Hello from Flask Server ! De Matthieu Cho-Lin!</h1>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil Bibliothèque</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .btn-client { background-color: #28a745; } /* Vert pour le client */
+        .btn-admin { background-color: #dc3545; }  /* Rouge pour l'admin */
+    </style>
+</head>
+<body>
+
+    <h1>Bienvenue à la Bibliothèque</h1>
+    <p>Veuillez choisir votre espace de connexion :</p>
+
+    <a href="{{ url_for('authentification_client') }}" class="btn btn-client">
+        Espace Client
+    </a>
+
+    <a href="{{ url_for('authentification_admin') }}" class="btn btn-admin">
+        Espace Administrateur
+    </a>
+
+</body>
+</html>
