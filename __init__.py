@@ -164,12 +164,24 @@ def enregistrer_client():
 # 1. Page principale : Liste + Formulaire d'ajout
 @app.route('/taches', methods=['GET', 'POST'])
 def taches():
-    conn = sqlite3.connect(database.db)
-    conn.row_factory = sqlite3.Row # Permet d'utiliser les noms de colonnes
+    # Utilisation de DB_PATH (Chemin absolu pour AlwaysData)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row 
+    
+    # --- AUTO-RÉPARATION : On crée la table ici si elle manque ---
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS taches (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            titre TEXT NOT NULL,
+            description VARCHAR(300),
+            date_echeance DATE,
+            etat BOOLEAN DEFAULT 0
+        );
+    """)
+    # -------------------------------------------------------------
 
     # 1. Gestion de l'AJOUT (POST)
     if request.method == 'POST':
-        # On insère directement les données reçues du formulaire
         conn.execute("INSERT INTO taches (titre, description, date_echeance, etat) VALUES (?, ?, ?, 0)",
                      (request.form['titre'], request.form['description'], request.form['date_echeance']))
         conn.commit()
@@ -177,7 +189,6 @@ def taches():
         return redirect(url_for('taches'))
 
     # 2. Gestion de l'AFFICHAGE (GET)
-    # On récupère la liste et on l'envoie au template
     taches = conn.execute("SELECT * FROM taches ORDER BY etat ASC, date_echeance ASC").fetchall()
     conn.close()
     
