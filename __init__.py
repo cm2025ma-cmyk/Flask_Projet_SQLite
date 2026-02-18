@@ -162,30 +162,23 @@ def enregistrer_client():
 ###################################################################################
 
 # 1. Page principale : Liste + Formulaire d'ajout
-@app.route('/gestion_taches', methods=['GET', 'POST'])
-def gestion_taches():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row # Important pour accéder par nom de colonne
-    cursor = conn.cursor()
+@app.route('/taches', methods=['GET', 'POST'])
+def taches():
+    conn = sqlite3.connect(database.db)
+    conn.row_factory = sqlite3.Row # Permet d'utiliser les noms de colonnes
 
-    # Si c'est un POST, c'est qu'on ajoute une tâche
+    # 1. Gestion de l'AJOUT (POST)
     if request.method == 'POST':
-        titre = request.form['titre']
-        description = request.form['description']
-        date_echeance = request.form['date_echeance']
-        
-        # Par défaut etat = 0 (défini dans le SQL), mais on l'insère proprement
-        cursor.execute("INSERT INTO taches (titre, description, date_echeance, etat) VALUES (?, ?, ?, 0)",
-                       (titre, description, date_echeance))
+        # On insère directement les données reçues du formulaire
+        conn.execute("INSERT INTO taches (titre, description, date_echeance, etat) VALUES (?, ?, ?, 0)",
+                     (request.form['titre'], request.form['description'], request.form['date_echeance']))
         conn.commit()
-        # On recharge la page pour voir la nouvelle tâche
         conn.close()
-        return redirect(url_for('gestion_taches'))
+        return redirect(url_for('taches'))
 
-    # Si c'est un GET, on affiche la liste
-    # On récupère tout (terminé et non terminé) pour pouvoir changer les états
-    cursor.execute("SELECT * FROM taches ORDER BY etat ASC, date_echeance ASC") 
-    taches = cursor.fetchall()
+    # 2. Gestion de l'AFFICHAGE (GET)
+    # On récupère la liste et on l'envoie au template
+    taches = conn.execute("SELECT * FROM taches ORDER BY etat ASC, date_echeance ASC").fetchall()
     conn.close()
     
     return render_template('taches.html', taches=taches)
