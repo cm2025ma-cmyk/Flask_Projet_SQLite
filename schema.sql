@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS clients;
 DROP TABLE IF EXISTS livres;
 DROP TABLE IF EXISTS emprunts;
+DROP TABLE IF EXISTS taches;
 
 CREATE TABLE clients (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,4 +24,12 @@ CREATE TABLE emprunts (
     livre_id INTEGER NOT NULL,
     nom_emprunteur TEXT NOT NULL,
     FOREIGN KEY (livre_id) REFERENCES livres (id)
+);
+
+CREATE TABLE taches (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    titre TEXT NOT NULL,
+    description VARCHAR(300),
+    date_echeance DATE,
+    etat BOOLEAN DEFAULT 0
 );
