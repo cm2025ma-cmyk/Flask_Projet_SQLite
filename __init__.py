@@ -164,35 +164,45 @@ def enregistrer_client():
 # 1. Page principale : Liste + Formulaire d'ajout
 @app.route('/taches', methods=['GET', 'POST'])
 def taches():
-    # Utilisation de DB_PATH (Chemin absolu pour AlwaysData)
-    conn = sqlite3.connect(database.db)
-    conn.row_factory = sqlite3.Row 
-    
-    # --- AUTO-RÉPARATION : On crée la table ici si elle manque ---
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+
+    # Création table si elle n'existe pas
     conn.execute("""
         CREATE TABLE IF NOT EXISTS taches (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             titre TEXT NOT NULL,
-            description VARCHAR(300),
+            description TEXT,
             date_echeance DATE,
-            etat BOOLEAN DEFAULT 0
-        );
+            etat INTEGER DEFAULT 0
+        )
     """)
-    # -------------------------------------------------------------
 
-    # 1. Gestion de l'AJOUT (POST)
+    # AJOUT TACHE
     if request.method == 'POST':
-        conn.execute("INSERT INTO taches (titre, description, date_echeance, etat) VALUES (?, ?, ?, 0)",
-                     (request.form['titre'], request.form['description'], request.form['date_echeance']))
+        conn.execute("""
+            INSERT INTO taches (titre, description, date_echeance, etat)
+            VALUES (?, ?, ?, 0)
+        """, (
+            request.form['titre'],
+            request.form['description'],
+            request.form['date_echeance']
+        ))
         conn.commit()
         conn.close()
         return redirect(url_for('taches'))
 
-    # 2. Gestion de l'AFFICHAGE (GET)
-    taches = conn.execute("SELECT * FROM taches ORDER BY etat ASC, date_echeance ASC").fetchall()
+    # AFFICHAGE
+    taches = conn.execute("""
+        SELECT * FROM taches
+        ORDER BY etat ASC, date_echeance ASC
+    """).fetchall()
+
     conn.close()
-    
+
     return render_template('taches.html', taches=taches)
+
 
 
 
