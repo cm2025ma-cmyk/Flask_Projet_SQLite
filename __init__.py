@@ -160,42 +160,23 @@ def enregistrer_client():
 ###################################################################################
 #                       MINI PROJET GESTION DE TACHES                             #
 ###################################################################################
+#########"""""""#################################
 
-# 1. Page principale : Liste + Formulaire d'ajout
 @app.route('/taches', methods=['GET', 'POST'])
 def taches():
     # Utilisation de 'with' pour gérer proprement la connexion et la fermeture
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT * FROM taches
+        WHERE utilisateur_id=?
+        ORDER BY terminee ASC, date_echeance IS NULL, date_echeance ASC, id DESC
+    """, (user_id,))
+    taches = cur.fetchall()
+    conn.close()
 
-        if request.method == 'POST':
-            # 1. Récupération des données du formulaire
-            titre = request.form['titre']
-            description = request.form.get('description', '') # .get évite le crash si vide
-            date_echeance = request.form['date_echeance']
-            
-            # 2. Insertion SQL sécurisée
-            cursor.execute("""
-                INSERT INTO taches (titre, description, date_echeance, etat) 
-                VALUES (?, ?, ?, 0)
-            """, (titre, description, date_echeance))
-            
-            conn.commit()
-            
-            # CORRECTION MAJEURE ICI :
-            # Au lieu de rendre le template directement (ce qui causerait une erreur car 
-            # liste_taches n'est pas encore définie), on redirige vers la route GET.
-            # Cela empêche aussi la resoumission du formulaire en cas d'actualisation (F5).
-            return redirect(url_for('taches'))
-
-        # LOGIQUE GET (Affichage)
-        # Cette partie s'exécute si c'est un GET ou après la redirection du POST
-        cursor.execute("SELECT * FROM taches ORDER BY etat ASC, date_echeance ASC") 
-        liste_taches = cursor.fetchall()
-
-    # Le 'with' a fermé la connexion automatiquement ici.
-    return render_template('taches.html', taches=liste_taches)
+    return render_template('taches.html', taches=taches)
 
 @app.route('/changer_etat/<int:id>/<int:etat>')
 def changer_etat(id, etat):
