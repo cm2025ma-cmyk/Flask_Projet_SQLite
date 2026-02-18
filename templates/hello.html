@@ -2,34 +2,48 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Accueil Bibliothèque</title>
+    <title>Accueil Bibliothèque & Tâches</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding-top: 50px; }
         .btn {
             display: inline-block;
             margin: 10px;
             padding: 15px 30px;
-            text-decoration: none;
+            text-decoration: none;A
             color: white;
             border-radius: 5px;
             font-size: 18px;
         }
-        .btn-client { background-color: #28a745; } /* Vert pour le client */
-        .btn-admin { background-color: #dc3545; }  /* Rouge pour l'admin */
+        .btn-client { background-color: #28a745; } /* Vert */
+        .btn-admin { background-color: #dc3545; }  /* Rouge */
+        .btn-taches { background-color: #007bff; } /* Bleu */
     </style>
 </head>
 <body>
 
-    <h1>Bienvenue à la Bibliothèque</h1>
-    <p>Veuillez choisir votre espace de connexion :</p>
+    <h1>Bienvenue</h1>
+    <p>Veuillez choisir votre application :</p>
 
-    <a href="{{ url_for('authentification_client') }}" class="btn btn-client">
-        Espace Client
-    </a>
+    <div style="margin-bottom: 30px;">
+        <h3>Gestion Bibliothèque</h3>
+        <a href="{{ url_for('authentification_client') }}" class="btn btn-client">
+            Espace Client
+        </a>
 
-    <a href="{{ url_for('authentification_admin') }}" class="btn btn-admin">
-        Espace Administrateur
-    </a>
+        <a href="{{ url_for('authentification_admin') }}" class="btn btn-admin">
+            Espace Administrateur
+        </a>
+    </div>
+
+    <hr style="width: 50%; margin: auto;">
+
+    <div style="margin-top: 30px;">
+        <h3>Projet IT</h3>
+        <!-- LE NOUVEAU BOUTON DEMANDÉ -->
+        <a href="{{ url_for('gestion_taches') }}" class="btn btn-taches">
+            Mini Gestionnaire de Tâches Collaboratif
+        </a>
+    </div>
 
 </body>
 </html>
