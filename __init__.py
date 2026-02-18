@@ -164,16 +164,28 @@ def enregistrer_client():
 
 @app.route('/taches', methods=['GET', 'POST'])
 def taches():
-    # Utilisation de 'with' pour gérer proprement la connexion et la fermeture
-    conn = sqlite3.connect('database.db')
+    # Utilisation de DB_PATH pour être sûr de trouver la base
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute("""
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        titre = request.form['titre']
+        description = request.form['description']
+        date_echeance = request.form['date_echeance']
+        
+        # Insertion simple (etat par défaut à 0)
+        cursor.execute("INSERT INTO taches (titre, description, date_echeance, etat) VALUES (?, ?, ?, 0)",
+                       (titre, description, date_echeance))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('taches'))
+
+    cursor.execute("""
         SELECT * FROM taches
-        WHERE utilisateur_id=?
-        ORDER BY terminee ASC, date_echeance IS NULL, date_echeance ASC, id DESC
-    """, (user_id,))
-    taches = cur.fetchall()
+        ORDER BY etat ASC, date_echeance IS NULL, date_echeance ASC, id DESC
+    """)
+    taches = cursor.fetchall()
     conn.close()
 
     return render_template('taches.html', taches=taches)
