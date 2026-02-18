@@ -194,15 +194,8 @@ def taches():
     
     return render_template('taches.html', taches=taches)
 
-# 2. Route pour changer l'état (Terminer / Non terminer)
-@app.route('/changer_etat/<int:id>/<int:etat>')
-def changer_etat(id, etat):
-    conn = sqlite3.connect(database.db)
-    # Raccourci : execute direct sans curseur
-    conn.execute("UPDATE taches SET etat = ? WHERE id = ?", (etat, id))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('taches'))
+
+
 
 if __name__ == "__main__":
   app.run(debug=True)
