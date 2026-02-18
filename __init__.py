@@ -162,9 +162,24 @@ def enregistrer_client():
 ###################################################################################
 
 # 1. Page principale : Liste + Formulaire d'ajout
-@app.route('/taches')
+@app.route('/taches', methods=['GET', 'POST'])
 def taches():
-    return "Route taches OK"
+    conn = sqlite3.connect('database.db')  # <-- correction ici
+    conn.row_factory = sqlite3.Row 
+    
+    if request.method == 'POST':
+        conn.execute(
+            "INSERT INTO taches (titre, description, date_echeance, etat) VALUES (?, ?, ?, 0)",
+            (request.form['titre'], request.form['description'], request.form['date_echeance'])
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('taches'))
+
+    taches = conn.execute("SELECT * FROM taches ORDER BY etat ASC, date_echeance ASC").fetchall()
+    conn.close()
+    
+    return render_template('taches.html', taches=taches)
 
 
 ## UPDATE task ###
