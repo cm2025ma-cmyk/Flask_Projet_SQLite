@@ -162,45 +162,41 @@ def enregistrer_client():
 ###################################################################################
 
 # 1. Page principale : Liste + Formulaire d'ajout
-@app.route('/gestion_taches', methods=['GET', 'POST'])
-def gestion_taches():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row # Important pour accéder par nom de colonne
+@app.route('/taches', methods=['GET', 'POST'])
+def taches():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row 
     cursor = conn.cursor()
 
-    # Si c'est un POST, c'est qu'on ajoute une tâche
     if request.method == 'POST':
+        # On ajoute la tâche
         titre = request.form['titre']
         description = request.form['description']
         date_echeance = request.form['date_echeance']
         
-        # Par défaut etat = 0 (défini dans le SQL), mais on l'insère proprement
         cursor.execute("INSERT INTO taches (titre, description, date_echeance, etat) VALUES (?, ?, ?, 0)",
                        (titre, description, date_echeance))
         conn.commit()
-        # On recharge la page pour voir la nouvelle tâche
+        # Ici, on recharge simplement la même page pour voir l'ajout
         conn.close()
-        return redirect(url_for('gestion_taches'))
+        return redirect('/taches')
 
-    # Si c'est un GET, on affiche la liste
-    # On récupère tout (terminé et non terminé) pour pouvoir changer les états
+    # Affichage de la liste
     cursor.execute("SELECT * FROM taches ORDER BY etat ASC, date_echeance ASC") 
-    taches = cursor.fetchall()
+    liste_taches = cursor.fetchall()
     conn.close()
     
-    return render_template('taches.html', taches=taches)
+    # On envoie les données au fichier taches.html
+    return render_template('taches.html', taches=liste_taches)
 
-# 2. Route pour changer l'état (Terminer / Non terminer)
-@app.route('/changer_etat_tache/<int:id_tache>/<int:nouvel_etat>')
-def changer_etat_tache(id_tache, nouvel_etat):
-    conn = sqlite3.connect('database.db')
+@app.route('/changer_etat/<int:id>/<int:etat>')
+def changer_etat(id, etat):
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    
-    cursor.execute("UPDATE taches SET etat = ? WHERE id = ?", (nouvel_etat, id_tache))
+    cursor.execute("UPDATE taches SET etat = ? WHERE id = ?", (etat, id))
     conn.commit()
     conn.close()
-    
-    return redirect(url_for('gestion_taches'))
+    return redirect('/taches')
 
 if __name__ == "__main__":
   app.run(debug=True)
