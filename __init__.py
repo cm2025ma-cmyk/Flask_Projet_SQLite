@@ -179,7 +179,7 @@ def taches():
         conn.commit()
         # Ici, on recharge simplement la même page pour voir l'ajout
         conn.close()
-        return redirect('/taches')
+        return render_template('taches.html', taches=liste_taches)
 
     # Affichage de la liste
     cursor.execute("SELECT * FROM taches ORDER BY etat ASC, date_echeance ASC") 
@@ -196,7 +196,7 @@ def changer_etat(id, etat):
     cursor.execute("UPDATE taches SET etat = ? WHERE id = ?", (etat, id))
     conn.commit()
     conn.close()
-    return redirect('/taches')
+    return render_template('taches.html', taches=liste_taches)
 
 if __name__ == "__main__":
   app.run(debug=True)
