@@ -2,58 +2,117 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestionnaire de Tâches</title>
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f4f4; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background-color: #f4f4f4; 
+            color: #333;
+        }
+
+        /* Bouton retour */
+        .btn-home { 
+            display: inline-block; 
+            margin-bottom: 20px; 
+            text-decoration: none; 
+            color: #555; 
+            font-weight: bold; 
+            padding: 8px 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        .btn-home:hover { background: #dde2e6; }
+
+        h1 { text-align: center; color: #2c3e50; }
+
+        /* Formulaire d'ajout */
+        .form-box { 
+            background-color: #ffffff; 
+            padding: 25px; 
+            border-radius: 8px; 
+            margin-bottom: 30px; 
+            border: 1px solid #ddd; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .form-box h3 { margin-top: 0; color: #007bff; }
         
-        /* Style du formulaire d'ajout */
-        .form-box {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-        input[type="text"], input[type="date"], textarea {
-            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        
+        input[type="text"], input[type="date"], textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 16px;
         }
-        button.add-btn {
-            background-color: #007bff; color: white; border: none; padding: 10px 20px;
-            border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%;
+        
+        button.add-btn { 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 16px; 
+            font-weight: bold;
+            transition: background 0.3s;
         }
         button.add-btn:hover { background-color: #0056b3; }
 
-        /* Style de la liste des tâches */
-        .task-card {
-            background-color: white;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .task-info { flex-grow: 1; margin-right: 15px; }
-        .task-info h3 { margin: 0 0 5px 0; color: #333; }
-        .task-info p { margin: 0; color: #666; font-size: 0.95em; }
-        .date-badge {
-            font-size: 0.75em; color: #fff; background-color: #6c757d;
-            padding: 3px 8px; border-radius: 10px; vertical-align: middle; margin-left: 8px;
-        }
+        /* Liste des tâches */
+        h2 { border-bottom: 2px solid #ddd; padding-bottom: 10px; }
 
-        /* États visuels */
-        .task-unfinished { border-left: 5px solid #ffc107; } /* Jaune pour en cours */
-        .task-finished { border-left: 5px solid #28a745; background-color: #f9fff9; opacity: 0.8; }
+        .task-card { 
+            background-color: white; 
+            border: 1px solid #ddd; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            border-radius: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .task-card:hover { transform: translateY(-2px); }
+
+        /* Styles conditionnels */
+        .task-unfinished { border-left: 6px solid #ffc107; }
+        .task-finished { 
+            border-left: 6px solid #28a745; 
+            background-color: #f8fff9; 
+            opacity: 0.7; 
+        }
         .task-finished h3 { text-decoration: line-through; color: #888; }
 
+        .task-content { flex-grow: 1; padding-right: 20px; }
+        .task-content h3 { margin: 0 0 5px 0; font-size: 1.2em; }
+        .task-content p { margin: 5px 0; color: #666; }
+        .task-date { 
+            display: inline-block; 
+            font-size: 0.85em; 
+            color: white; 
+            background-color: #6c757d; 
+            padding: 2px 8px; 
+            border-radius: 12px; 
+            margin-top: 5px;
+        }
+
         /* Boutons d'action */
-        .btn-action {
-            padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 0.9em; display: inline-block; text-align: center;
+        .btn-action { 
+            padding: 10px 15px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            font-size: 0.9em; 
+            font-weight: bold;
+            white-space: nowrap;
         }
         .btn-finish { background-color: #28a745; color: white; }
         .btn-finish:hover { background-color: #218838; }
@@ -61,62 +120,64 @@
         .btn-unfinish { background-color: #ffc107; color: #333; }
         .btn-unfinish:hover { background-color: #e0a800; }
 
-        .btn-home { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #555; font-weight: bold; }
-        .status-text { display: block; margin-top: 5px; font-size: 0.85em; color: #888; }
+        .empty-state { text-align: center; padding: 40px; color: #888; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <a href="{{ url_for('hello_world') }}" class="btn-home">← Retour à l'accueil</a>
+    <!-- Retour Accueil -->
+    <a href="/" class="btn-home">← Retour à l'accueil</a>
 
-    <h1 style="text-align: center; margin-bottom: 30px;">Mini Gestionnaire de Tâches</h1>
+    <h1>Mini Gestionnaire de Tâches</h1>
 
-    <!-- FORMULAIRE -->
+    <!-- FORMULAIRE D'AJOUT -->
+    <!-- L'action pointe vers la route /taches définie dans app.py -->
     <div class="form-box">
-        <h3 style="margin-top: 0;">Ajouter une tâche</h3>
-        <form action="{{ url_for('gestion_taches') }}" method="POST">
+        <h3>Nouvelle Tâche</h3>
+        <form action="/taches" method="POST">
             <div class="form-group">
-                <label>Titre :</label>
+                <label>Titre de la tâche :</label>
                 <input type="text" name="titre" required placeholder="Ex: Rédiger le rapport...">
             </div>
             <div class="form-group">
                 <label>Description :</label>
-                <textarea name="description" rows="2" maxlength="300" placeholder="Détails..."></textarea>
+                <textarea name="description" rows="3" maxlength="300" placeholder="Détails de la tâche..."></textarea>
             </div>
             <div class="form-group">
-                <label>Échéance :</label>
+                <label>Date d'échéance :</label>
                 <input type="date" name="date_echeance" required>
             </div>
-            <button type="submit" class="add-btn">Ajouter</button>
+            <button type="submit" class="add-btn">Ajouter la tâche</button>
         </form>
     </div>
 
-    <!-- LISTE -->
-    <h2 style="border-bottom: 2px solid #ddd; padding-bottom: 10px;">Vos Tâches</h2>
+    <!-- LISTE DES TÂCHES -->
+    <h2>Vos Tâches</h2>
 
     {% if taches %}
         {% for tache in taches %}
+            <!-- La classe CSS change si etat == 1 (fini) ou 0 (pas fini) -->
             <div class="task-card {% if tache['etat'] == 1 %}task-finished{% else %}task-unfinished{% endif %}">
                 
-                <div class="task-info">
-                    <h3>
-                        {{ tache['titre'] }} 
-                        <span class="date-badge">Pour le : {{ tache['date_echeance'] }}</span>
-                    </h3>
+                <div class="task-content">
+                    <h3>{{ tache['titre'] }}</h3>
                     <p>{{ tache['description'] }}</p>
-                    <span class="status-text">
-                        {% if tache['etat'] == 1 %} Statut : Terminé ✅ {% else %} Statut : En cours ⏳ {% endif %}
-                    </span>
+                    <span class="task-date">📅 Pour le : {{ tache['date_echeance'] }}</span>
                 </div>
 
                 <div class="task-actions">
+                    <!-- Si la tâche est NON terminée (0) -->
                     {% if tache['etat'] == 0 %}
-                        <a href="{{ url_for('changer_etat_tache', id_tache=tache['id'], nouvel_etat=1) }}" class="btn-action btn-finish">
-                            Terminer
+                        <!-- Le lien pointe vers /changer_etat/ID/1 -->
+                        <a href="/changer_etat/{{ tache['id'] }}/1" class="btn-action btn-finish">
+                            ✓ Terminer
                         </a>
+                    
+                    <!-- Si la tâche est TERMINÉE (1) -->
                     {% else %}
-                        <a href="{{ url_for('changer_etat_tache', id_tache=tache['id'], nouvel_etat=0) }}" class="btn-action btn-unfinish">
-                            Rouvrir
+                        <!-- Le lien pointe vers /changer_etat/ID/0 -->
+                        <a href="/changer_etat/{{ tache['id'] }}/0" class="btn-action btn-unfinish">
+                            ↺ Rouvrir
                         </a>
                     {% endif %}
                 </div>
@@ -124,8 +185,9 @@
             </div>
         {% endfor %}
     {% else %}
-        <div style="text-align: center; padding: 40px; color: #888;">
-            <p>Aucune tâche pour le moment. Ajoutez-en une ci-dessus !</p>
+        <div class="empty-state">
+            <p>Aucune tâche pour le moment.</p>
+            <p>Utilisez le formulaire ci-dessus pour commencer !</p>
         </div>
     {% endif %}
 
