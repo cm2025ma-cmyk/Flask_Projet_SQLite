@@ -203,6 +203,22 @@ def taches():
 
     return render_template('taches.html', taches=taches)
 
+## UPDATE task ###
+
+@app.route('/changer_etat/<int:id>/<int:etat>')
+def changer_etat(id, etat):
+
+    conn = sqlite3.connect(DB_PATH)
+
+    conn.execute(
+        "UPDATE taches SET etat = ? WHERE id = ?",
+        (etat, id)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('taches'))
 
 
 
