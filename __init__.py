@@ -165,7 +165,7 @@ def enregistrer_client():
 @app.route('/taches', methods=['GET', 'POST'])
 def taches():
     # Utilisation de DB_PATH (Chemin absolu pour AlwaysData)
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(database.db)
     conn.row_factory = sqlite3.Row 
     
     # --- AUTO-RÉPARATION : On crée la table ici si elle manque ---
